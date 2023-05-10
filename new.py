@@ -31,37 +31,15 @@ CLOUD_APIS = [
 APIS = [
     # If admin.googleapis.com is to be included, then it must be the first in this list.
     "admin.googleapis.com",
-    "contacts.googleapis.com",
-    "drive.googleapis.com",
     "gmail.googleapis.com",
-    "serviceusage.googleapis.com",
-    "iam.googleapis.com"
+    
 ]
 
 SCOPES = [
-    "openid",
-    "https://www.googleapis.com/auth/cloud-platform",
-    "https://www.googleapis.com/auth/ndev.cloudman",
-    "https://www.googleapis.com/auth/userinfo.profile",
-    "https://www.googleapis.com/auth/userinfo.email",
-    "https://www.googleapis.com/auth/admin.directory.orgunit.readonly",
-    "https://www.googleapis.com/auth/admin.directory.user.readonly",
-    "https://www.googleapis.com/auth/admin.directory.group.readonly",
-    "https://www.googleapis.com/auth/gmail.settings.basic",
-    "https://www.googleapis.com/auth/gmail.settings.sharing",
-    "https://www.googleapis.com/auth/directory.readonly",
-    "https://www.googleapis.com/auth/drive.readonly",
-    "https://www.googleapis.com/auth/drive",
-    "https://www.googleapis.com/auth/admin.directory.domain.readonly",
-    "https://www.googleapis.com/auth/admin.directory.user",
-    "https://www.googleapis.com/auth/admin.directory.group",
-    "https://www.googleapis.com/auth/admin.datatransfer",
-    "https://mail.google.com/",
-    "https://www.googleapis.com/auth/admin.reports.audit.readonly",
-    "https://www.googleapis.com/auth/calendar",
-    "https://www.googleapis.com/auth/ediscovery",
-    "https://www.googleapis.com/auth/devstorage.full_control",
-    "https://www.googleapis.com/auth/admin.reports.usage.readonly"
+"https://apps-apis.google.com/a/feeds/emailsettings/2.0/"
+,"https://www.googleapis.com/auth/gmail.settings.basic"
+,"https://www.googleapis.com/auth/gmail.settings.sharing"
+
 ]
 
 

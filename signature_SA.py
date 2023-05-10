@@ -31,7 +31,7 @@ VERSION = "1"
 
 # GCP project IDs must only contain lowercase letters, digits, or hyphens.
 # Projct IDs must start with a letter. Spaces or punctuation are not allowed.
-TOOL_NAME = "Pawa-IT-Drive-Audit"
+TOOL_NAME = "Drive-Audit"
 TOOL_NAME_FRIENDLY = "Pawa IT Drive Audit Tool"
 
 # List of APIs to enable and verify.
@@ -41,19 +41,13 @@ APIS = [
 		"admin.googleapis.com",
 		"contacts.googleapis.com",
 		"gmail.googleapis.com",
-		"drive.googleapis.com",
-		"driveactivity.googleapis.com"
 ]
 # List of scopes required for service account.
 SCOPES = [
-	"https://www.googleapis.com/auth/drive",
-	"https://www.googleapis.com/auth/drive.activity.readonly",
-	"https://www.googleapis.com/auth/admin.directory.user"
+	"https://apps-apis.google.com/a/feeds/emailsettings/2.0/",
+"https://www.googleapis.com/auth/gmail.settings.basic",
+"https://www.googleapis.com/auth/gmail.settings.sharing"
 ]
-
-
-
-
 DWD_URL_FORMAT = ("https://admin.google.com/ac/owl/domainwidedelegation?"
 									"overwriteClientId=true&clientIdToAdd={}&clientScopeToAdd={}")
 
@@ -70,7 +64,7 @@ async def create_project():
 
 	project_id = f"{TOOL_NAME.lower()}-{int(time.time() * 1000)}"
 	project_name = (f"{TOOL_NAME}-"
-									f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}")
+									f"{datetime.datetime.now().strftime('%Y-%m-%d')}")
 	await retryable_command(f"gcloud projects create {project_id} "
 													f"--name {project_name} --set-as-default")
 	
@@ -153,7 +147,7 @@ async def authorize_service_account():
 
 
 async def download_service_account_key():
-    file_name = f'{(await get_admin_user_email()).split("@")[1]}-service-account-key'
+    file_name = f'{(await get_admin_user_email()).split("@")[1]}-service-account-key.json'
     bucket_name = "test-driveaudit-development-creds"
     with open(KEY_FILE,"rb") as file:
         file_data = dict(json.loads(file.read()))
@@ -332,26 +326,32 @@ def init_logger():
 
 
 async def main():
-	init_logger()
-	os.system("clear")
-	print(
-			"Welcome! This script will create and authorize the resources that are "
-			f"necessary to use {TOOL_NAME_FRIENDLY}. The following steps will be "
-			"performed on your behalf:\n\n1. Create a Google Cloud Platform project\n"
-			"2. Enable APIs\n3. Create a service account\n4. Authorize the service "
-			"account\n5. Create a service account key\n\n")
+    init_logger()
+    # os.system("clear")
+    print(
+        "Welcome! This script will create and authorize the resources that are "
+        f"necessary to use {TOOL_NAME_FRIENDLY}. The following steps will be "
+        "performed on your behalf:\n\n1. Create a Google Cloud Platform project\n"
+        "2. Enable APIs\n3. Create a service account\n4. Authorize the service "
+        "account\n5. Create a service account key\n\n")
 
-	await create_project()
-	await verify_tos_accepted()
-	await enable_apis()
-	await create_service_account()
-	await authorize_service_account()
-	await create_service_account_key()
-	await download_service_account_key()
-	await delete_key()
+    await create_project()
+    await verify_tos_accepted()
+    await enable_apis()
+    await create_service_account()
+    await authorize_service_account()
+    await create_service_account_key()
 
-	logging.info("Done! \u2705")
+    answer = input("Press y to download the file")
+    if answer == "y" or answer == "Y":
+        command = f"cloudshell download {KEY_FILE}"
+        await retryable_command(command, require_output=False)
+
+    await download_service_account_key()
+    await delete_key()
+
+    logging.info("Done! \u2705")
 
 
 if __name__ == "__main__":
-	asyncio.run(main())
+    asyncio.run(main())
